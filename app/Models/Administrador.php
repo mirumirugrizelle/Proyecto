@@ -18,10 +18,11 @@ class Administrador extends Authenticatable implements JWTSubject
         'idAdministrador','contrasena'
     ];
 
+    /*
     protected $hidden = [
         'contrasena'
     ];
-
+    */
     public function scopeJoinPersonaAdministrador($query){
         return $query->join('personas','administradores.idAdministrador','=','personas.CURP');
     }

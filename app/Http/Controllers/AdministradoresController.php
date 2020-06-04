@@ -63,22 +63,25 @@ class AdministradoresController extends Controller
 
     public function login(Request $request)
     {
-        if(!$login = Administrador::where('idAdministrador',$request['idAdministrador'])
-            ->where('contrasena',Hash::make($request['contrasena']))) {
+        $login = Administrador::select('contrasena')->where('idAdministrador',$request['idAdministrador'])->get();
+        Log::info($login);
+        if(!$login->isEmpty()){
+            if(Hash::check($request['contrasena'],$login[0]['contrasena'])) {
+                try {
+                    $bytes = random_bytes(100);
+                } catch (\Exception $e) {
+                }
+                $token = bin2hex($bytes);
+                Administrador::where('idAdministrador',$request['idAdministrador'])->update(["token" => $token]);
+                $respondWithToken = array(
+                    "idAdministrador" => $request['idAdministrador'],
+                    "token" => $token,
+                );
+
+                return response()->json($respondWithToken, 200);
+            }
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        try {
-            $bytes = random_bytes(100);
-        } catch (\Exception $e) {
-        }
-        $token = bin2hex($bytes);
-        Administrador::where('idAdministrador',$request['idAdministrador'])->update(["token" => $token]);
-        $respondWithToken = array(
-            "idAdministrador" => $request['idAdministrador'],
-            "token" => $token,
-        );
-
-        return response()->json($respondWithToken, 200);
-
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }

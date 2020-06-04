@@ -19,15 +19,10 @@ class CheckToken
      */
     public function handle($request, Closure $next)
     {
-        $admin = null;
-        if($admin = Administrador::where([
-            ['idAdministrador',$request->idAdministrador],
-            ['token',$request->token]])->get()) {
-            Log::info($admin);
+        $admin = Administrador::where('idAdministrador',$request['idAdministrador'])->where('token',$request['token'])->get();
+        if(!$admin->isEmpty()) {
             return $next($request);
-        } else {
-            return response()->json('Acceso no autorizado', 401);
         }
-
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }
