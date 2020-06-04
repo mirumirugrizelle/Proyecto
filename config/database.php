@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -88,12 +87,12 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => 'Server=tcp:eu-az-sql-serv1.database.windows.net,1433;Initial Catalog=dmnj7uylr30efr7;Persist Security Info=False;User ID=uwp2lv8xskis2h7;Password=lFUkT@XHKKsidn$7KQiUs8*CU;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;',
+            'host' => 'eu-az-sql-serv1.database.windows.net',
+            'port' => '1433',
+            'database' => '	dmnj7uylr30efr7',
+            'username' => 'uwp2lv8xskis2h7',
+            'password' => 'lFUkT@XHKKsidn$7KQiUs8*CU',
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
