@@ -6,6 +6,8 @@ use App\Models\Administrador;
 use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AdministradoresController extends Controller
 {
@@ -46,5 +48,37 @@ class AdministradoresController extends Controller
         //
     }
 
+    public function generate_string($strength) {
+        $input = '0123456789.,;abcdefghijklmnopqrstuvwxyz!?¡¿+|^¬@><{][}ABCDEFGHIJKLMNOPQRSTUVWXYZ!?¡¿+|^¬';
+        $input_length = strlen($input);
+        $random_string = '';
+        for($i = 0; $i < $strength; $i++) {
+            $random_character = $input[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
 
+        return $random_string;
+    }
+
+
+    public function login(Request $request)
+    {
+        if(!$login = Administrador::where('idAdministrador',$request['idAdministrador'])
+            ->where('contrasena',Hash::make($request['contrasena']))) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        try {
+            $bytes = random_bytes(100);
+        } catch (\Exception $e) {
+        }
+        $token = bin2hex($bytes);
+        Administrador::where('idAdministrador',$request['idAdministrador'])->update(["token" => $token]);
+        $respondWithToken = array(
+            "idAdministrador" => $request['idAdministrador'],
+            "token" => $token,
+        );
+
+        return response()->json($respondWithToken, 200);
+
+    }
 }

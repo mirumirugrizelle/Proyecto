@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use JWTAuth;
-use JWTFactory;
 
 class AuthController extends Controller
 {
@@ -25,12 +23,13 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        if(!$login = DB::table('administrador')->where('idAdministrador',$request['idAdministrador'])
-            ->where('contrasena',Hash::make($request['contrasena']))) {
+        $credentials = request(['idAdministrador', 'contrasena']);
+
+        if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        //return $this->hacerUnMetodoPaQueTeGenereTokenYVerComoLoUtilizamos;
+        return $this->respondWithToken($token);
     }
 
 
@@ -71,4 +70,5 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 1000
         ]);
     }
+
 }

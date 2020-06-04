@@ -59,19 +59,16 @@ Route::resource('publicaciones','PublicacionesController',['only' => [
     'index', 'show','store','destroy','update'
 ]]);
 Route::resource('tipos','TiposController',['only' => [
-    'index', 'show','store','destroy','update'
+    'show','store','destroy','update'
 ]]);
 
+Route::post('login', 'AdministradoresController@login');
 Route::group([
 
-    'middleware' => 'api',
+    'middleware' => 'login',
     'prefix' => 'auth'
 
 ], function ($router) {
-
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-
+    Route::get('tipos','TiposController@index');
+    Route::post('login', 'AuthController@logout');
 });
